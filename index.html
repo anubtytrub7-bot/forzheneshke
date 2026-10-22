@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fff0f5">
+<title>Сюрприз для Женешки 💗</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg-hearts" aria-hidden="true">♡ ♥ ♡ ♥ ♡ ♥</div>
+<main class="scene">
+<section class="screen active" id="cover">
+  <p class="kicker">МАЛЕНЬКИЙ СЮРПРИЗ</p>
+  <div class="card" id="card" tabindex="0" role="button" aria-label="Открыть открытку">
+    <div class="card-face front"><div class="big-heart">♥</div><h2>Для Женешки</h2><p>Нажми, чтобы открыть 💌</p></div>
+    <div class="card-face inside"><div class="flower">🌷</div><h2>Привет, Женешка!</h2><p>Тут кое-что для тебя…</p></div>
+  </div>
+  <button class="btn primary" id="openCard">Открыть открытку 💌</button>
+  <p class="hint">Внутри немного хитрости и много тепла ✨</p>
+</section>
+
+<section class="screen" id="question">
+  <div class="emoji">💌</div><h1>Хочешь узнать,<br>что там?</h1>
+  <p class="sub">Там кое-что интересное 👀</p>
+  <div class="actions"><button class="btn primary" id="yes">Да 💗</button><button class="btn secondary" id="no">Нет 🙈</button></div>
+  <p class="plea" id="plea" aria-live="polite"></p>
+</section>
+
+<section class="screen" id="money">
+  <div class="emoji">🤑</div><h1>Без корумдука не покажу!</h1>
+  <p class="sub">Скиньте 50 сом в MBANK…</p>
+  <div class="stamp">ШУТКА? 🤨</div>
+  <p class="hint">Это просто прикол — деньги отправлять не нужно.</p>
+  <button class="btn primary" id="pay">Ладно, скину 😂</button>
+</section>
+
+<section class="screen" id="prank">
+  <div class="emoji">🤣</div><h1>АХАХА, ЭТО БЫЛА ШУТКА!</h1>
+  <p class="sub">Ну что, хочешь узнать, что там реально?</p>
+  <div class="actions"><button class="btn primary" id="realYes">Да, показывай 💖</button><button class="btn secondary" id="ofCourse">Конечно! 🥹</button></div>
+</section>
+
+<section class="screen" id="final">
+  <div class="sparkles">✦ ♡ ✦</div><div class="emoji">🌸</div>
+  <h1>Женешка, ты одна из лучших моих Женешек! 💗</h1>
+  <p class="final-text">Ты замечательная, добрая и по-своему особенная. Желаю тебе побольше счастливых моментов, искренних улыбок и дней, которые хочется запомнить.</p>
+  <p class="final-text">Пусть у тебя всё получается, мечты становятся ближе, а плохое настроение долго не задерживается. Спасибо, что ты такая классная! 🫶</p>
+  <div class="final-heart">♥</div><p class="signature">С теплом — для Женешки 💌</p>
+  <button class="btn secondary" id="restart">Посмотреть ещё раз ↻</button>
+</section>
+</main>
+<div id="floating" aria-hidden="true"></div>
+<script>
+const screens = [...document.querySelectorAll('.screen')];
+function show(id) {
+  screens.forEach(s => s.classList.toggle('active', s.id === id));
+  window.scrollTo({top:0, behavior:'smooth'});
+  hearts();
+}
+const card = document.getElementById('card');
+function openCard() {
+  if (card.classList.contains('opened')) return;
+  card.classList.add('opened');
+  setTimeout(() => show('question'), 650);
+}
+card.addEventListener('click', openCard);
+card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCard(); }});
+document.getElementById('openCard').addEventListener('click', openCard);
+
+const no = document.getElementById('no');
+const plea = document.getElementById('plea');
+let attempts = 0;
+function runAway() {
+  attempts++;
+  plea.textContent = 'Ну пожалуйста, нажмите «Да» 🥺💗';
+  no.style.setProperty('--x', (Math.random()*180-90)+'px');
+  no.style.setProperty('--y', (Math.random()*90-45)+'px');
+  no.classList.add('running');
+  if (attempts >= 3) no.textContent = 'Ну пожааалуйста 😭';
+}
+no.addEventListener('pointerenter', runAway);
+no.addEventListener('click', e => { e.preventDefault(); runAway(); });
+no.addEventListener('touchstart', e => { e.preventDefault(); runAway(); }, {passive:false});
+
+document.getElementById('yes').addEventListener('click', () => show('money'));
+document.getElementById('pay').addEventListener('click', () => show('prank'));
+document.getElementById('realYes').addEventListener('click', () => show('final'));
+document.getElementById('ofCourse').addEventListener('click', () => show('final'));
+document.getElementById('restart').addEventListener('click', () => {
+  attempts=0; no.textContent='Нет 🙈'; no.classList.remove('running');
+  no.style.setProperty('--x','0px'); no.style.setProperty('--y','0px'); plea.textContent='';
+  card.classList.remove('opened'); show('cover');
+});
+function hearts() {
+  const holder=document.getElementById('floating'), symbols=['♥','♡','💗','✦'];
+  for(let i=0;i<12;i++){
+    const el=document.createElement('span'); el.className='float-heart';
+    el.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    el.style.left=(5+Math.random()*90)+'vw';
+    el.style.setProperty('--drift',(Math.random()*80-40)+'px');
+    el.style.animationDelay=(Math.random()*.4)+'s'; holder.appendChild(el);
+    el.addEventListener('animationend',()=>el.remove());
+  }
+}
+</script>
+</body>
+</html>
